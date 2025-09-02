@@ -1,0 +1,33 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Impact, sans-serif;
+}
+
+body {
+    background-color: rgb(232, 232, 232);
+    font-size: 16pt;
+}
+
+h1,
+p {
+    text-align: center;
+    color: rgb(20, 12, 171);
+}
+
+input {
+    padding: 0.5em;
+    border-radius: 0.5em;
+    font-size: 1.2rem;
+    border-color: rgb(45, 130, 189);
+}
+
+button {
+    color: rgb(45, 130, 189);
+}
+
+.input-container {
+    display: flex;
+    margin: 0 auto;
+    align-items: center;
+}
