@@ -5,7 +5,10 @@ export default function App() {
   // States and variables
   const [name, setName] = useState("");
   const [calories, setCalories] = useState("");
-  const [foodList, setFoodList] = useState([]);
+
+  const foodListStr = localStorage.getItem("foodList");
+  const initFoodList = foodListStr !==null ? JSON.parse(foodListStr) : [];
+  const [foodList, setFoodList] = useState(initFoodList);
   const inputRef = useRef(null);
   const totalCalories = foodList.reduce((total, food) => {
     return total + Number(food.calories || 0);
@@ -26,8 +29,17 @@ export default function App() {
       alert("Please input a food name.");
       return;
     }
+    const lowerCaseName = name.toLowerCase()
+    if(foodList.find(food => food.name.toLowerCase() === lowerCaseName)){
+      alert("No duplicates :3")
+      return;
+    }
 
-    setFoodList(prevList => [...prevList, food]);
+    setFoodList(prevList => {
+      const newList = [...prevList, food];
+      localStorage.setItem("foodList", JSON.stringify(newList));
+      return newList;
+    });
     setName("");
     setCalories("");
     inputRef.current.focus();
@@ -35,17 +47,48 @@ export default function App() {
 
   // Render foods in foodList, most recent entry appears on top
   function renderFoodList() {
-    const options = [];
+    return foodList.toReversed().map(food => {
+      const keyName = food.name;
+
+      const handleDelete = () => {
+        setFoodList(prev => {
+          const newList = prev.filter(food => food.name !== keyName);
+          localStorage.setItem("foodList", JSON.stringify(newList));
+          return newList;
+        })
+      }
+
+      return(
+        <div key={keyName}>
+          <span>{keyName} : {food.calories}</span>
+          <button className="delete-btn" onClick={handleDelete}>Delete</button>
+        </div>
+      );
+    })
+    /*const list = [];
     const reversedFoodList = [...foodList].reverse();
+    
     for (let i = 0; i < reversedFoodList.length; i++) {
-      options[i] = (
-        <option key={i}>
-          {reversedFoodList[i].name}: {reversedFoodList[i].calories}
-        </option>
+      const keyName = reversedFoodList[i].name;
+
+      const handleDelete = () => {
+        setFoodList(prev => {
+          const newList = prev.filter(food => food.name !== keyName);
+          console.log(newList);
+          localStorage.setItem("foodList", JSON.stringify(newList));
+          return newList;
+        })
+      }
+
+      list[i] = (
+        <div key={keyName}>
+          <span>{keyName} : {reversedFoodList[i].calories}</span>
+          <button className="delete-btn" onClick={handleDelete}>Delete</button>
+        </div>
       );
     }
 
-    return options;
+    return list;*/
   }
 
   return (
@@ -70,14 +113,7 @@ export default function App() {
           value={calories}
           onChange={(e) => setCalories(e.target.value)}>
         </input>
-        {/*for later
-       
-        <select>
-          <option>Breakfast</option>
-          <option>Lunch</option>
-          <option>Dinner</option>
-        </select>
-      */}
+        
         <button onClick={addFood}>
           Eat!
         </button>
