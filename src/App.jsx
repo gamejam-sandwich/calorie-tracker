@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import sound from "/public/nom.mp3";
 import './App.css'
 
 export default function App() {
@@ -7,7 +8,7 @@ export default function App() {
   const [calories, setCalories] = useState("");
 
   const foodListStr = localStorage.getItem("foodList");
-  const initFoodList = foodListStr !==null ? JSON.parse(foodListStr) : [];
+  const initFoodList = foodListStr !== null ? JSON.parse(foodListStr) : [];
   const [foodList, setFoodList] = useState(initFoodList);
   const inputRef = useRef(null);
   const totalCalories = foodList.reduce((total, food) => {
@@ -20,7 +21,7 @@ export default function App() {
     ev.preventDefault();
     const food = { name, calories };
     // Check input value of calories (whole/valid number)
-    // Check that food input isn't blank
+    // Check that food input isn't blank & doesn't include duplicates
     if (isNaN(+calories) || calories.includes('.')) {
       alert("Please input a valid number.");
       return;
@@ -30,11 +31,13 @@ export default function App() {
       return;
     }
     const lowerCaseName = name.toLowerCase()
-    if(foodList.find(food => food.name.toLowerCase() === lowerCaseName)){
+    if (foodList.find(food => food.name.toLowerCase() === lowerCaseName)) {
       alert("No duplicates :3")
       return;
     }
 
+    // Update the state with newly inputted food item
+    // Save to local storage
     setFoodList(prevList => {
       const newList = [...prevList, food];
       localStorage.setItem("foodList", JSON.stringify(newList));
@@ -43,13 +46,15 @@ export default function App() {
     setName("");
     setCalories("");
     inputRef.current.focus();
+    playSound();
   }
 
-  // Render foods in foodList, most recent entry appears on top
+  // Map foods in foodList, most recent entry appears on top
   function renderFoodList() {
     return foodList.toReversed().map(food => {
       const keyName = food.name;
 
+      // Delete by filtering out the name of deleted food from foodList
       const handleDelete = () => {
         setFoodList(prev => {
           const newList = prev.filter(food => food.name !== keyName);
@@ -58,37 +63,19 @@ export default function App() {
         })
       }
 
-      return(
-        <div key={keyName}>
-          <span>{keyName} : {food.calories}</span>
+      // Render the new food with a delete button
+      return (
+        <div className="food-info" key={keyName}>
+          <span>{keyName}: {food.calories}</span>
           <button className="delete-btn" onClick={handleDelete}>Delete</button>
         </div>
       );
     })
-    /*const list = [];
-    const reversedFoodList = [...foodList].reverse();
-    
-    for (let i = 0; i < reversedFoodList.length; i++) {
-      const keyName = reversedFoodList[i].name;
+  }
 
-      const handleDelete = () => {
-        setFoodList(prev => {
-          const newList = prev.filter(food => food.name !== keyName);
-          console.log(newList);
-          localStorage.setItem("foodList", JSON.stringify(newList));
-          return newList;
-        })
-      }
-
-      list[i] = (
-        <div key={keyName}>
-          <span>{keyName} : {reversedFoodList[i].calories}</span>
-          <button className="delete-btn" onClick={handleDelete}>Delete</button>
-        </div>
-      );
-    }
-
-    return list;*/
+  // Plays audio
+  function playSound() {
+    new Audio(sound).play();
   }
 
   return (
@@ -98,8 +85,8 @@ export default function App() {
         flexDirection: "column"
       }}
     >
-      <h1>om nom nom</h1>
-      <p>Calories: {totalCalories}</p>
+      <h1 className="title">om nom nom</h1>
+      <p className="title">Calories: {totalCalories}</p>
       <br />
       <div className="container">
         <input
@@ -113,13 +100,20 @@ export default function App() {
           value={calories}
           onChange={(e) => setCalories(e.target.value)}>
         </input>
-        
-        <button onClick={addFood}>
+
+        <button className="eat-btn" onClick={addFood}>
           Eat!
         </button>
       </div>
 
-      <div className="food-list">{renderFoodList()}</div>
+      <div
+        className="food-list"
+        style={{
+          display: foodList.length ? "flex" : "none"
+        }}
+      >
+        {renderFoodList()}
+      </div>
     </div>
   )
 }

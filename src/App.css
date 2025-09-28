@@ -1,29 +1,47 @@
 * {
     margin: 0;
     padding: 0;
-    font-family: Impact, sans-serif;
+    font-family: 'Arial Narrow Bold', sans-serif;
 }
 
 body {
-    background-color: rgb(232, 232, 232);
+    background-color: #ffe1f5;
     font-size: 16pt;
 }
 
-h1,
-p {
+.title {
     text-align: center;
-    color: rgb(20, 12, 171);
+    color: #b6558d;
+    padding: 10px;
+    background-color: #ffb8e7;
+    border-bottom: 5px dotted #9f167d;
 }
 
 input {
     padding: 0.5em;
     border-radius: 0.5em;
     font-size: 1.2rem;
-    border-color: rgb(45, 130, 189);
+    margin: 0.7em;
+    border: 5px double #9f167d;
 }
 
-button {
-    color: rgb(45, 130, 189);
+.eat-btn {
+    font-size: 1.1em;
+    padding: 6px 4px;
+    border-radius: 0.2em;
+    color: #b6558d;
+    background-color: #ffe6f3;
+    border: 5px dotted #b6558d;
+    cursor: pointer;
+}
+
+.delete-btn {
+    color: #b6558d;
+    border: 2px solid #b6558d;
+    padding: 6px 4px;
+    margin-left: 1.5em;
+    align-self: right;
+    cursor: pointer;
 }
 
 .container {
@@ -35,6 +53,17 @@ button {
 .food-list {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 1.2em;
+    margin: 40px 235px;
+    background-color: #ffb8e7;
+    border-radius: 0.5em;
+    border: 5px dashed #b6558d;
+}
+
+.food-info {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    color: #b6558d;
+    font-size: 2rem;
+    font-weight: bold;
 }
